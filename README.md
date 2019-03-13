@@ -19,5 +19,5 @@ Matplotlib
 
 contextlib2
 
-cocoapi
+cocoapi  CUDA-9.0  CuDNN-7.1
 
