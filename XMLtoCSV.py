@@ -11,8 +11,8 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 
 
-
-image_dir='C:\\Users\\chaoz\\Desktop\\(3+2)1123'
+#image_dir='C:\\Users\\chaoz\\Desktop\\(3+2)1123'
+image_dir='C:\\Users\\chaoz\\Desktop\\1121-3+2'
 sname='mix.png'
 xmlname='xml'
 RGB_dirlist=[]
@@ -33,7 +33,7 @@ for i in range(len(RGB_dirlist)):
         tree = ET.parse(xml_dir)
         root = tree.getroot()
         for member in root.findall('object'):
-            value = (root.find('filename').text,
+            value = (root.find('filename').text.split('_')[0]+'_mix.png',
                      int(root.find('size')[0].text),
                      int(root.find('size')[1].text),
                      member[0].text,
@@ -47,5 +47,5 @@ for i in range(len(RGB_dirlist)):
     xml_df = pd.DataFrame(xml_list, columns=column_name)
 
 
-xml_df.to_csv('mix_train.csv', index=None)
+xml_df.to_csv('mix_test.csv', index=None)
 print('Successfully converted xml to csv.')

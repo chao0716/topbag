@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Mar 10 20:44:17 2018
+Created on Fri Mar 22 14:37:04 2019
 
 @author: chaoz
 """
@@ -13,7 +13,8 @@ import os
 
 mix_dirlist=[]
 total_sc=0
-image_dir='C:\\Users\\chaoz\\Desktop\\1121-3+2'
+image_dir='C:\\Users\\chaoz\\Desktop\\(3+2)1123'
+#image_dir='C:\\Users\\chaoz\\Desktop\\1121-3+2'
 sname='RGB.png'
 RGB_dirlist=[]
 depth_dirlist=[]
@@ -50,8 +51,8 @@ for i in range(len(RGB_dirlist)):
         depth_img[np.where(depth_img==0)]=255
         #save image
         r = Image.fromarray(np.uint8(depth_img))
-        g = Image.fromarray(np.uint8(rgb_img[:,:,1]))
-        b = Image.fromarray(np.uint8(rgb_img[:,:,2]))
+        g = Image.fromarray(np.uint8(depth_img))
+        b = Image.fromarray(np.uint8(depth_img))
         image = Image.merge("RGB", (r, g, b))
-        image.save(RGB_dir.split('_')[0]+'_mix.png')
+        image.save(RGB_dir.split('_')[0]+'_heat.png')
         mix_dirlist.append(RGB_dir.split('_')[0]+'_mix.png')
