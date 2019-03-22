@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 
 
 image_dir='C:\\Users\\chaoz\\Desktop\\(3+2)1123'
-sname='RGB.png'
+sname='mix.png'
 xmlname='xml'
 RGB_dirlist=[]
 xml_dirlist=[]
@@ -27,7 +27,7 @@ for dire in os.listdir(image_dir):
 xml_list = []
 for i in range(len(RGB_dirlist)):
     RGB_dir=RGB_dirlist[i]
-    xml_dir=RGB_dir.split('.')[0]+'.xml'
+    xml_dir=RGB_dir.split('_')[0]+'_RGB.xml'
     if os.path.exists(xml_dir)==True:  
         print(i,i/len(RGB_dirlist))
         tree = ET.parse(xml_dir)
@@ -47,5 +47,5 @@ for i in range(len(RGB_dirlist)):
     xml_df = pd.DataFrame(xml_list, columns=column_name)
 
 
-xml_df.to_csv('bag_label.csv', index=None)
+xml_df.to_csv('mix_train.csv', index=None)
 print('Successfully converted xml to csv.')
