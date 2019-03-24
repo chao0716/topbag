@@ -13,7 +13,7 @@ import numpy as np
 only1=0
 kdanfkn=0
 total_sc=0
-image_dir='C:\\Users\\chaoz\\Desktop\\(3+2)1123'
+image_dir='C:\\Users\\chaoz\\Desktop\\1121-3+2'
 sname='RGB.png'
 dname='D.png'
 xmlname='xml'
@@ -39,33 +39,30 @@ for i in range(len(RGB_dirlist)):
         rect={}
         line=""
         root = tree.getroot()
-        #image path in xml file
-        for name in root.iter('path'):
-            rect['path'] = name.text
+        rgb_image = np.array(cv2.imread(RGB_dir, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH))
         #open image before draw
-        depth_image_path=depth_dir
-        depth_image = np.array(cv2.imread(depth_image_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH))
-        
-        im=depth_image.astype(int)
-        min_exclude_0=im[im!=0].min()
-        max_exclude_0=im[im!=0].max()
-        
-        diff = max_exclude_0 - min_exclude_0
-        
-        
-        for i in range (np.shape(im)[0]):
-            for j in range(np.shape(im)[1]):
-                if im[i,j]!=0:
-                    im[i,j]=(im[i,j]-min_exclude_0)*255/diff
-
-        im[np.where(im==0)]=255
+#        depth_image_path=depth_dir
+#        depth_image = np.array(cv2.imread(depth_image_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH))
+#        
+#        im=depth_image.astype(int)
+#        min_exclude_0=im[im!=0].min()
+#        max_exclude_0=im[im!=0].max()
+#        
+#        diff = max_exclude_0 - min_exclude_0
+#        
+#        
+#        for i in range (np.shape(im)[0]):
+#            for j in range(np.shape(im)[1]):
+#                if im[i,j]!=0:
+#                    im[i,j]=(im[i,j]-min_exclude_0)*255/diff
+#
+#        im[np.where(im==0)]=255
 #        im2=im
 #        im3=im
 #        im2=np.concatenate((im,im2),axis=1)
 #        im3=np.concatenate((im2,im3),axis=1)
         
-        img=im
-        bag_count=0
+        img=rgb_image
         for ob in root.iter('object'): 
             if ob[0].text=='bag1':
                 for bndbox in ob.iter('bndbox'):
@@ -78,13 +75,18 @@ for i in range(len(RGB_dirlist)):
                     for ymax in bndbox.iter('ymax'):
                         rect['ymax'] = ymax.text
                 # draw
-                cv2.rectangle(img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (255, 0, 0), 3)          
-    #                if bag_count==1:
-    #                    cv2.rectangle(img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (0, 255, 0), 3)                 
-    #                if bag_count==2:
-    #                    cv2.rectangle(img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (0, 0, 255), 3)                 
-    #                else:
-    #                    cv2.rectangle(img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (255, 255, 255), 2)
-    
+                cv2.rectangle(img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (0, 0, 255), 10)          
+#            elif ob[0].text=='bag2':
+#                for bndbox in ob.iter('bndbox'):
+#                    for xmin in bndbox.iter('xmin'):
+#                        rect['xmin'] = xmin.text
+#                    for ymin in bndbox.iter('ymin'):
+#                        rect['ymin'] = ymin.text
+#                    for xmax in bndbox.iter('xmax'):
+#                        rect['xmax'] = xmax.text
+#                    for ymax in bndbox.iter('ymax'):
+#                        rect['ymax'] = ymax.text
+                # draw
+                cv2.rectangle(img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (0, 255, 0), 10)                          
         
-        cv2.imwrite(depth_dir.split('.')[0]+'_boundingbox.png',img)
+        cv2.imwrite(depth_dir.split('_')[0]+'_boundingbox.png',img)

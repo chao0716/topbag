@@ -16,11 +16,11 @@ import os
 import cv2
 import numpy as np
 import xml.etree.ElementTree as ET
-
+import heapq
 only1=0
 kdanfkn=0
 total_sc=0
-image_dir='C:\\Users\\chaoz\\Desktop\\(3+2)1123'
+image_dir='C:\\Users\\chaoz\\Desktop\\1121-3+2'
 sname='RGB.png'
 dname='D.png'
 xmlname='xml'
@@ -37,7 +37,7 @@ for dire in os.listdir(image_dir):
         depth_dirlist.append(pwd_dir)
         
 for de in range(len(depth_dirlist)):
-    print(de)
+#    print(de)
     depth_dir=depth_dirlist[de]
     RGB_dir=RGB_dirlist[de]
     
@@ -72,46 +72,29 @@ for de in range(len(depth_dirlist)):
 
         depth_image_path=depth_dir
         depth_image = np.array(cv2.imread(depth_image_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH))
-        
-        im=depth_image.astype(int)
-        min_exclude_0=im[im!=0].min()
-        max_exclude_0=im[im!=0].max()
-        
-        diff = max_exclude_0 - min_exclude_0
-        
-        
-        for i in range (np.shape(im)[0]):
-            for j in range(np.shape(im)[1]):
-                if im[i,j]!=0:
-                    im[i,j]=(im[i,j]-min_exclude_0)*255/diff
-        
-        bag1_mean_list=[]
-        bag1_var_list=[]
+        depth_image = depth_image[100:750,200:1080]
+        x=depth_image
+
+        x = (x - np.min(x)) / (np.max(x) - np.min(x)) *255
+#        x = cv2.fastNlMeansDenoisingColored(x,None,10,10,7,21)
+        kernel = np.ones((7, 7), np.uint8)
+        x =cv2.morphologyEx(x, cv2.MORPH_CLOSE, kernel)
+        im = x       
         im[np.where(im==0)]=255
-        for i in range(bag1_count):
-            k=i
-            part_im=im[bag1_ymin[k]+100:bag1_ymax[k]-100,bag1_xmin[k]+50:bag1_xmax[k]-50]
-            bag1_mean_list.append(part_im.mean())
-            bag1_var_list.append(part_im.var())
-            
-        bag2_mean_list=[]
-        bag2_var_list=[]
-        for i in range(bag2_count):
-            k2=i
-            part_im=im[bag2_ymin[k2]:bag2_ymax[k2],bag2_xmin[k2]:bag2_xmax[k2]]
-            bag2_mean_list.append(part_im.mean())
-            bag2_var_list.append(part_im.var())
+#        iii = np.unravel_index(np.argmin(im), im.shape)
+        ii = np.unravel_index(np.argsort(im.ravel()), im.shape)
         
-        if bag2_mean_list: 
-            kdanfkn+=1
-            if min(bag1_mean_list)<min(bag2_mean_list):
-                total_sc+=1
-                print(total_sc/kdanfkn)
-            else:
-                print(RGB_dir)
-        else:
-            only1+=1
-            
-print(only1,total_sc,kdanfkn) 
- 
+        RGB_im=cv2.imread(RGB_dir, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
+        RGB_im = RGB_im[100:750,200:1080]
+        idx = 0
+        n = 500
+        for i in range(n):
+#            print(ii[0][i], ii[1][i], im[ii[0][i], ii[1][i]], sorted(im.ravel())[i])
+            cv2.circle(RGB_im, (ii[1][i],ii[0][i]), 5, (0, 0, int(i/n*255)), -8)
+                
+#        cv2.imshow('t', RGB_im)
+#        cv2.waitKey(10)
+        cv2.imwrite(RGB_dir+".jpg", RGB_im)
+#        cv2.imwrite(RGB_dir+"_1.jpg", )
+     
                      

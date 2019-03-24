@@ -9,7 +9,10 @@ import cv2
 import numpy as np
 from PIL import Image
 import os
+import numpy.random
+import matplotlib.pyplot as plt
 
+x = np.array(cv2.imread('1.png',cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH))
 
 mix_dirlist=[]
 total_sc=0
@@ -33,26 +36,17 @@ for i in range(len(RGB_dirlist)):
     if os.path.exists(xml_dir)==True:     
         rgb_img = cv2.imread(RGB_dir,cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)      
         depth_img = cv2.imread(depth_dir,cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
-        depth_img=depth_img.astype(int)
-        depth_img=np.uint8(depth_img)
-        #im=im[50:800,200:1080]
-#        min_exclude_0=depth_img[depth_img!=0].min()
-#        max_exclude_0=depth_img[depth_img!=0].max()
-#        diff = max_exclude_0 - min_exclude_0
-#        is0=np.where(depth_img!=0)
-#        depth_img[is0]=depth_img[is0]-min_exclude_0
-#        depth_img[is0]=depth_img[is0]*255
-#        depth_img[is0]=depth_img[is0]/diff
-#        depth_img=depth_img.reshape((960,1280))
-#        for i in range (np.shape(depth_img)[0]):
-#            for j in range(np.shape(depth_img)[1]):
-#                if depth_img[i,j]!=0:
-#                    depth_img[i,j]=(depth_img[i,j]-min_exclude_0)*255/diff
-        depth_img[np.where(depth_img==0)]=255
-        #save image
-        r = Image.fromarray(np.uint8(depth_img))
-        g = Image.fromarray(np.uint8(depth_img))
-        b = Image.fromarray(np.uint8(depth_img))
-        image = Image.merge("RGB", (r, g, b))
-        image.save(RGB_dir.split('_')[0]+'_heat.png')
-        mix_dirlist.append(RGB_dir.split('_')[0]+'_mix.png')
+#        depth_img = depth_img[100:750,200:1080]
+#        depth_img = cv2.resize(depth_img, (200,200))
+
+        x=depth_img
+
+        x = (x - np.min(x)) / (np.max(x) - np.min(x)) *255
+#        x = cv2.fastNlMeansDenoisingColored(x,None,10,10,7,21)
+        kernel = np.ones((7, 7), np.uint8)
+        x =cv2.morphologyEx(x, cv2.MORPH_CLOSE, kernel)
+        #X = np.int8(X) 
+        plt.imshow(x)  
+        plt.colorbar()        
+        plt.savefig(RGB_dir.split('_')[0]+'_heat.png')
+        plt.show() 

@@ -38,7 +38,7 @@ from object_detection.utils import visualization_utils as vis_util
  
 #Model preparation
 
-MODEL_NAME = 'tv_vehicle_inference_graph'
+MODEL_NAME = 'C:\\Users\\chaoz\\Desktop\\0322trymodel'
 
 # Path to frozen detection graph. This is the actual model that is used for the object detection.
 PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
@@ -76,15 +76,15 @@ def load_image_into_numpy_array(image):
 #Detection
 
 # If you want to test the code with your images, just add path to the images to the TEST_IMAGE_PATHS.
-PATH_TO_TEST_IMAGES_DIR = 'C:\\Users\\chaoz\\Desktop\\df\\'
+PATH_TO_TEST_IMAGES_DIR = 'C:\\Users\\chaoz\\Desktop\\test_set_mix\\'
 
  
 # Size, in inches, of the output images.
 IMAGE_SIZE = (12, 8)
  
-output_image_path = ("C:\\Users\\chaoz\\Desktop\\ouy")
+output_image_path = ("C:\\Users\\chaoz\\Desktop\\test_set_rgb")
 # 另外加了输出识别结果框的坐标，保存为.csv表格文件
-output_csv_path = ("C:\\Users\\chaoz\\Desktop\\ouy")
+output_csv_path = ("C:\\Users\\chaoz\\Desktop\\test_set_rgb")
 
 with detection_graph.as_default():
   with tf.Session(graph=detection_graph) as sess:
@@ -126,8 +126,21 @@ with detection_graph.as_default():
           line_thickness=8)
       #write images
       #保存识别结果图片
-      
-      cv2.imwrite(output_image_path+'\\'+image_path.split('\\')[-1],image_np)
+#%%      
+      rgb_f=image_path.split('_')[0]+'_RGB.png'
+      rgb_path='C:\\Users\\chaoz\\Desktop\\1121-3+2\\'+rgb_f
+      rgb_image = np.array(cv2.imread(rgb_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH))
+      vis_util.visualize_boxes_and_labels_on_image_array(
+          rgb_image,
+          np.squeeze(boxes),
+          np.squeeze(classes).astype(np.int32),
+          np.squeeze(scores),
+          category_index,
+          use_normalized_coordinates=True,
+          line_thickness=8,
+          max_boxes_to_draw=20,
+          min_score_thresh=.5)
+      cv2.imwrite(output_image_path+'\\'+image_path.split('\\')[-1],rgb_image)
       
       s_boxes = boxes[scores > 0.5]
       s_classes = classes[scores > 0.5]

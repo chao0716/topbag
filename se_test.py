@@ -83,8 +83,8 @@ def load_image_into_numpy_array(image):
 # image1.jpg
 # image2.jpg
 # If you want to test the code with your images, just add path to the images to the TEST_IMAGE_PATHS.
-PATH_TO_TEST_IMAGES_DIR = 'C:\\ABBproject\\models-r1.12.0\\research\\object_detection\\test_images'
-TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(1, 3) ]
+PATH_TO_TEST_IMAGES_DIR = 'C:\\Users\\chaoz\\Desktop\\test_set_mix'
+TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.png'.format(i)) for i in range(205) ]
 
 # Size, in inches, of the output images.
 IMAGE_SIZE = (12, 8)    
