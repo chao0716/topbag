@@ -12,7 +12,7 @@ import numpy as np
 
 image_dir='C:\\Users\\chaoz\\Desktop\\1121-3+2\\'
 save_dir='C:\\Users\\chaoz\\Desktop\\save\\'
-my_matrix = np.loadtxt(open("ouy.csv","rb"),delimiter=",",skiprows=0,dtype=np.str)
+my_matrix = np.loadtxt(open("result.csv","rb"),delimiter=",",skiprows=0,dtype=np.str)
 my_matrix = np.delete(my_matrix,0,axis=0)
 
 name_list=[]
@@ -20,9 +20,16 @@ x_list=[]
 y_list=[]
 prob_list=[]
 class_list=[]
-
+xmin_list=[]
+ymin_list=[]
+xmax_list=[]
+ymax_list=[]
 for i in range(len(my_matrix)):
     name_list.append(my_matrix[i][0])
+    ymin_list.append(float(my_matrix[i][1]))
+    xmin_list.append(float(my_matrix[i][2]))
+    ymax_list.append(float(my_matrix[i][3]))
+    xmax_list.append(float(my_matrix[i][4]))
     x_list.append((float(my_matrix[i][3])-float(my_matrix[i][1]))/2+float(my_matrix[i][1]))
     y_list.append((float(my_matrix[i][4])-float(my_matrix[i][2]))/2+float(my_matrix[i][2]))
     prob_list.append(float(my_matrix[i][5]))
@@ -30,10 +37,11 @@ for i in range(len(my_matrix)):
 
 for i in range(len(name_list)):
     rgb_img_dir=image_dir+name_list[i]+'.png'
-    xml_dir=image_dir+name_list[i]+'.xml'
+    xml_dir=image_dir+name_list[i].split('_')[0]+'_RGB.xml'
     rgb_img = cv2.imread(rgb_img_dir,cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
     if int(class_list[i])==1:
-        cv2.circle(rgb_img, (int(x_list[i]),int(y_list[i])), 10, (0,255,255), -10)
+        cv2.circle(rgb_img, (int(y_list[i]),int(x_list[i])), 50, (0,255,255), -10)
+        cv2.rectangle(rgb_img, (int(xmin_list[i]), int(ymax_list[i])), (int(xmax_list[i]), int(ymin_list[i])), (0, 255, 255), 30)
     
     #draw boundingbox
     tree = ET.parse(xml_dir)
@@ -52,8 +60,8 @@ for i in range(len(name_list)):
                 for ymax in bndbox.iter('ymax'):
                     rect['ymax'] = ymax.text
             # draw
-            cv2.rectangle(rgb_img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (0, 0, 255), 10)          
-    cv2.imwrite(save_dir+name_list[i]+'_boundingbox.png',rgb_img)
+            cv2.rectangle(rgb_img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (0, 255, 0), 10)          
+    cv2.imwrite(rgb_img_dir,rgb_img)    
 
 need_d=[]         
 for i in range(len(my_matrix)):
@@ -91,7 +99,7 @@ for j in range(1000):
                 break
 success=0
 for i in range(len(name_list)):
-    xml_dir=image_dir+name_list[i]+'.xml'
+    xml_dir=image_dir+name_list[i].split('_')[0]+'_RGB.xml'
     tree = ET.parse(xml_dir)
     rect={}
     line=""
@@ -107,9 +115,9 @@ for i in range(len(name_list)):
                     rect['xmax'] = xmax.text
                 for ymax in bndbox.iter('ymax'):
                     rect['ymax'] = ymax.text            
-    if int(rect['xmax'])<x_list[i]<int(rect['xmax']) and  int(rect['ymax'])<y_list[i]<int(rect['ymax']):
-        success+=1
-print(success,len(name_list),success/len(name_list))    
+            if int(rect['xmin'])-10<y_list[i]<int(rect['xmax'])-10 and int(rect['ymin'])-10<x_list[i]<int(rect['ymax'])-10:
+                success+=1
+print(success,(len(name_list)+1),success/(len(name_list)+1)) 
           
             
             

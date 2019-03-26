@@ -10,22 +10,13 @@ import time
 start = time.time()
 import numpy as np
 import os
-import six.moves.urllib as urllib
-import sys
-import tarfile
 import tensorflow as tf
-import zipfile
-import cv2
- 
-from collections import defaultdict
-from io import StringIO
-from matplotlib import pyplot as plt
 from PIL import Image
 import pandas as pd
  
 
   
-os.chdir('C:\\ABBproject\\models-r1.12.0\\research\\object_detection\\')
+os.chdir('./venv/models/research/object_detection/')
   
    
 #Object detection imports
@@ -38,7 +29,7 @@ from object_detection.utils import visualization_utils as vis_util
  
 #Model preparation
 
-MODEL_NAME = 'C:\\Users\\chaoz\\Desktop\\0322trymodel'
+MODEL_NAME = './venv/models/research/object_detection/models/model/model_fro_0325'
 
 # Path to frozen detection graph. This is the actual model that is used for the object detection.
 PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
@@ -76,15 +67,15 @@ def load_image_into_numpy_array(image):
 #Detection
 
 # If you want to test the code with your images, just add path to the images to the TEST_IMAGE_PATHS.
-PATH_TO_TEST_IMAGES_DIR = 'C:\\Users\\chaoz\\Desktop\\test_set_mix\\'
+PATH_TO_TEST_IMAGES_DIR = './venv/models/research/object_detection/data/test_sex_mix/'
 
  
 # Size, in inches, of the output images.
 IMAGE_SIZE = (12, 8)
  
-output_image_path = ("C:\\Users\\chaoz\\Desktop\\test_set_rgb")
+#output_image_path = ("C:\\Users\\chaoz\\Desktop\\test_set_rgb")
 # 另外加了输出识别结果框的坐标，保存为.csv表格文件
-output_csv_path = ("C:\\Users\\chaoz\\Desktop\\test_set_rgb")
+output_csv_path = ("./venv/models/research/object_detection/models/model/model_fro_0325/")
 
 with detection_graph.as_default():
   with tf.Session(graph=detection_graph) as sess:
@@ -127,20 +118,20 @@ with detection_graph.as_default():
       #write images
       #保存识别结果图片
 #%%      
-      rgb_f=image_path.split('_')[0]+'_RGB.png'
-      rgb_path='C:\\Users\\chaoz\\Desktop\\1121-3+2\\'+rgb_f
-      rgb_image = np.array(cv2.imread(rgb_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH))
-      vis_util.visualize_boxes_and_labels_on_image_array(
-          rgb_image,
-          np.squeeze(boxes),
-          np.squeeze(classes).astype(np.int32),
-          np.squeeze(scores),
-          category_index,
-          use_normalized_coordinates=True,
-          line_thickness=8,
-          max_boxes_to_draw=20,
-          min_score_thresh=.5)
-      cv2.imwrite(output_image_path+'\\'+image_path.split('\\')[-1],rgb_image)
+#      rgb_f=image_path.split('_')[0]+'_RGB.png'
+#      rgb_path='C:\\Users\\chaoz\\Desktop\\1121-3+2\\'+rgb_f
+#      rgb_image = np.array(cv2.imread(rgb_path, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH))
+#      vis_util.visualize_boxes_and_labels_on_image_array(
+#          rgb_image,
+#          np.squeeze(boxes),
+#          np.squeeze(classes).astype(np.int32),
+#          np.squeeze(scores),
+#          category_index,
+#          use_normalized_coordinates=True,
+#          line_thickness=8,
+#          max_boxes_to_draw=20,
+#          min_score_thresh=.5)
+#      cv2.imwrite(output_image_path+'\\'+image_path.split('\\')[-1],rgb_image)
       
       s_boxes = boxes[scores > 0.5]
       s_classes = classes[scores > 0.5]
@@ -159,7 +150,7 @@ with detection_graph.as_default():
           newdata.iloc[0,6] = s_classes[i]
 
           data = data.append(newdata)
-      data.to_csv(output_csv_path+'.csv',index = False)
+      data.to_csv(output_csv_path+'result.csv',index = False)
       
 end =  time.time()
 print("Execution Time: ", end - start)
