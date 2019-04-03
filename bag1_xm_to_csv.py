@@ -11,8 +11,8 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 
 
-#image_dir='C:\\Users\\chaoz\\Desktop\\(3+2)1123'
-image_dir='C:\\Users\\chaoz\\Desktop\\1121-3+2'
+image_dir='C:\\Users\\chaoz\\Desktop\\(3+2)1123'
+#image_dir='C:\\Users\\chaoz\\Desktop\\1121-3+2'
 sname='mix.png'
 xmlname='xml'
 RGB_dirlist=[]
@@ -48,5 +48,5 @@ for i in range(len(RGB_dirlist)):
     xml_df = pd.DataFrame(xml_list, columns=column_name)
 
 
-xml_df.to_csv('mix_test1.csv', index=None)
+xml_df.to_csv('mix_train.csv', index=None)
 print('Successfully converted xml to csv.')

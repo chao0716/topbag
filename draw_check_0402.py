@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Mar 24 14:45:16 2019
+Created on Tue Apr  2 13:21:04 2019
 
 @author: chaoz
 """
+
 
 import xml.etree.ElementTree as ET
 import cv2
@@ -11,9 +12,7 @@ import os
 import numpy as np
 
 image_dir='C:\\Users\\chaoz\\Desktop\\(3+2)1123\\'
-save_dir='C:\\Users\\chaoz\\Desktop\\false2\\'
-#image_dir='C:\\Users\\chaoz\\Desktop\\test_set\\'
-#save_dir='C:\\Users\\chaoz\\Desktop\\false\\'
+save_dir='C:\\Users\\chaoz\\Desktop\\save\\'
 my_matrix = np.loadtxt(open("0401_train_15000_result.csv","rb"),delimiter=",",skiprows=0,dtype=np.str)
 my_matrix = np.delete(my_matrix,0,axis=0)
 
@@ -126,6 +125,10 @@ for i in range(len(name_list)):
     line=""
     root = tree.getroot()
     sec_count=0
+    rgb_img_dir=image_dir+name_list[i].split('_')[0]+'_RGB.png'
+    rgb_img = cv2.imread(rgb_img_dir,cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
+    cv2.rectangle(rgb_img, (int(xmin_list[i]), int(ymax_list[i])), (int(xmax_list[i]), int(ymin_list[i])), (255, 0, 0), 2)
+    cv2.putText(rgb_img,str(round(prob_list[i], 3)),(int(xmin_list[i])+30, int(ymax_list[i])+30),cv2.FONT_HERSHEY_PLAIN,2.0,(255,0,255),3)
     for ob in root.iter('object'): 
         if ob[0].text=='bag1':
             for bndbox in ob.iter('bndbox'):
@@ -137,37 +140,7 @@ for i in range(len(name_list)):
                     rect['xmax'] = xmax.text
                 for ymax in bndbox.iter('ymax'):
                     rect['ymax'] = ymax.text            
-            if int(rect['xmin'])<y_list[i]<int(rect['xmax']) and int(rect['ymin'])<x_list[i]<int(rect['ymax']):
-                success+=1
-                sec_count+=1
-    if sec_count==0:
-        print(name_list[i])
-        rgb_img_dir=image_dir+name_list[i].split('_')[0]+'_RGB.png'
-        rgb_img = cv2.imread(rgb_img_dir,cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
-        cv2.circle(rgb_img, (int(y_list[i]),int(x_list[i])), 50, (0,255,255), -10)
-        cv2.rectangle(rgb_img, (int(xmin_list[i]), int(ymax_list[i])), (int(xmax_list[i]), int(ymin_list[i])), (0, 122, 122), 2)
-        cv2.putText(rgb_img,str(round(prob_list[i], 3)),(int(xmin_list[i])+30, int(ymax_list[i])+30),cv2.FONT_HERSHEY_PLAIN,2.0,(255,0,255),3)
-#        #draw boundingbox
-        tree = ET.parse(xml_dir)
-        rect={}
-        line=""
-        root = tree.getroot()
-        for ob in root.iter('object'): 
-            if ob[0].text=='bag1':
-                for bndbox in ob.iter('bndbox'):
-                    for xmin in bndbox.iter('xmin'):
-                        rect['xmin'] = xmin.text
-                    for ymin in bndbox.iter('ymin'):
-                        rect['ymin'] = ymin.text
-                    for xmax in bndbox.iter('xmax'):
-                        rect['xmax'] = xmax.text
-                    for ymax in bndbox.iter('ymax'):
-                        rect['ymax'] = ymax.text
-                # draw
-                cv2.rectangle(rgb_img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (0, 255, 0), 5)          
-        cv2.imwrite('C:\\Users\\chaoz\\Desktop\\false\\'+name_list[i].split('_')[0]+'_RGB.png',rgb_img) 
-
-print(success,(len(name_list)),success/(len(name_list))) 
-          
-            
-            
+            # draw
+            cv2.rectangle(rgb_img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (0, 255, 0), 2) 
+            cv2.putText(rgb_img,'Ground_truth',(int(xmin_list[i])+30, int(ymax_list[i])+30),cv2.FONT_HERSHEY_PLAIN,2.0,(0,255,0),10)             
+    cv2.imwrite('C:\\Users\\chaoz\\Desktop\\save\\'+name_list[i].split('_')[0]+'_RGB.png',rgb_img) 

@@ -10,11 +10,6 @@ import numpy as np
 from PIL import Image
 import os
 
-#depth_img = cv2.imread('1.png',cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
-#depth_img=depth_img.astype(int)
-
-
-
 
 mix_dirlist=[]
 total_sc=0

@@ -36,7 +36,7 @@ for i in range(len(RGB_dirlist)):
     if os.path.exists(xml_dir)==True:     
         rgb_img = cv2.imread(RGB_dir,cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)      
         depth_img = cv2.imread(depth_dir,cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
-#        depth_img = depth_img[100:750,200:1080]
+        depth_img = depth_img[80:850,170:1130]
 #        depth_img = cv2.resize(depth_img, (200,200))
 
         x=depth_img
@@ -45,6 +45,10 @@ for i in range(len(RGB_dirlist)):
 #        x = cv2.fastNlMeansDenoisingColored(x,None,10,10,7,21)
         kernel = np.ones((7, 7), np.uint8)
         x =cv2.morphologyEx(x, cv2.MORPH_CLOSE, kernel)
+        ada=np.where(x>=0) and np.where(x<100)
+        x[ada]=np.nan
+        xdx=np.where(x>190)
+        x[xdx]=np.nan
         #X = np.int8(X) 
         plt.imshow(x)  
         plt.colorbar()        
