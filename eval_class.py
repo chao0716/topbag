@@ -10,11 +10,11 @@ import cv2
 import os
 import numpy as np
 
-image_dir='C:\\Users\\chaoz\\Desktop\\(3+2)1123\\'
-save_dir='C:\\Users\\chaoz\\Desktop\\false2\\'
-#image_dir='C:\\Users\\chaoz\\Desktop\\test_set\\'
-#save_dir='C:\\Users\\chaoz\\Desktop\\false\\'
-my_matrix = np.loadtxt(open("0401_train_15000_result.csv","rb"),delimiter=",",skiprows=0,dtype=np.str)
+#image_dir='C:\\Users\\chaoz\\Desktop\\(3+2)1123\\'
+#save_dir='C:\\Users\\chaoz\\Desktop\\false2\\'
+image_dir='C:\\Users\\chaoz\\Desktop\\testset\\'
+save_dir='C:\\Users\\chaoz\\Desktop\\false\\'
+my_matrix = np.loadtxt(open("0426_16000_result.csv","rb"),delimiter=",",skiprows=0,dtype=np.str)
 my_matrix = np.delete(my_matrix,0,axis=0)
 
 name_list=[]
@@ -90,7 +90,7 @@ ymin_list = np.delete(ymin_list,need_d,axis=0)
 xmax_list = np.delete(xmax_list,need_d,axis=0)
 ymax_list = np.delete(ymax_list,need_d,axis=0)
 
-for j in range(2000):            
+for j in range(20000):            
     for i in range(len(name_list)):
         if i+1==len(name_list):
             break
@@ -120,7 +120,7 @@ for j in range(2000):
                 break
 success=0
 for i in range(len(name_list)):
-    xml_dir=image_dir+name_list[i].split('_')[0]+'_RGB.xml'
+    xml_dir='C:\\Users\\chaoz\\Desktop\\testxml\\'+name_list[i].split('_')[0]+'_RGB.xml'
     tree = ET.parse(xml_dir)
     rect={}
     line=""
@@ -137,7 +137,7 @@ for i in range(len(name_list)):
                     rect['xmax'] = xmax.text
                 for ymax in bndbox.iter('ymax'):
                     rect['ymax'] = ymax.text            
-            if int(rect['xmin'])<y_list[i]<int(rect['xmax']) and int(rect['ymin'])<x_list[i]<int(rect['ymax']):
+            if int(rect['xmin'])+100<y_list[i]<int(rect['xmax'])-100 and int(rect['ymin'])+100<x_list[i]<int(rect['ymax'])-100:
                 success+=1
                 sec_count+=1
     if sec_count==0:
@@ -165,7 +165,7 @@ for i in range(len(name_list)):
                         rect['ymax'] = ymax.text
                 # draw
                 cv2.rectangle(rgb_img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (0, 255, 0), 5)          
-        cv2.imwrite('C:\\Users\\chaoz\\Desktop\\false\\'+name_list[i].split('_')[0]+'_RGB.png',rgb_img) 
+        cv2.imwrite('C:\\Users\\chaoz\\Desktop\\false2\\'+name_list[i].split('_')[0]+'_RGB.png',rgb_img) 
 
 print(success,(len(name_list)),success/(len(name_list))) 
           

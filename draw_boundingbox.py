@@ -13,7 +13,7 @@ import numpy as np
 only1=0
 kdanfkn=0
 total_sc=0
-image_dir='C:\\Users\\chaoz\\Desktop\\test_set'
+image_dir='C:\\Users\\chaoz\\Desktop\\testset'
 sname='RGB.png'
 dname='D.png'
 xmlname='xml'
@@ -24,16 +24,11 @@ for dire in os.listdir(image_dir):
     pwd_dir=dire
     if sname in os.path.split(pwd_dir)[1]:
         RGB_dirlist.append(pwd_dir) 
-    if xmlname in os.path.split(pwd_dir)[1]:
-        xml_dirlist.append(pwd_dir)
-    if dname in os.path.split(pwd_dir)[1]:
-        depth_dirlist.append(pwd_dir)
 
 for i in range(len(RGB_dirlist)):
     print(i,i/len(RGB_dirlist))    
     RGB_dir=os.path.join(image_dir,RGB_dirlist[i])
-    depth_dir=os.path.join(image_dir,depth_dirlist[i])
-    xml_dir=RGB_dir.split('.')[0]+'.xml'
+    xml_dir='C:\\Users\\chaoz\\Desktop\\testxml\\'+RGB_dirlist[i].split('.')[0]+'.xml'
     if os.path.exists(xml_dir)==True:       
         tree = ET.parse(xml_dir)
         rect={}
@@ -90,4 +85,4 @@ for i in range(len(RGB_dirlist)):
                 cv2.rectangle(img, (int(rect['xmin']), int(rect['ymax'])), (int(rect['xmax']), int(rect['ymin'])), (0, 255, 0), 5)                          
         
 #        cv2.imwrite(depth_dir.split('_')[0]+'_boundingbox.png',img)
-        cv2.imwrite('C:\\Users\\chaoz\\Desktop\\wang\\'+RGB_dirlist[i],img) 
+        cv2.imwrite('C:\\Users\\chaoz\\Desktop\\ss\\'+RGB_dirlist[i],img) 
